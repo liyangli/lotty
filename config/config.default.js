@@ -5,26 +5,36 @@
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
+const path = require("path");
+const setting = require("../app/config/setting");
 module.exports = appInfo => {
-  /**
-   * built-in config
-   * @type {Egg.EggAppConfig}
-   **/
-  const config = {};
-
-  // use for cookie sign key, should change to your own and keep security
-  config.keys = appInfo.name + '_1552126379511_7798';
-
-  // add your middleware config here
-  config.middleware = [];
-
-  // add your user config here
-  const userConfig = {
-    // myAppName: 'egg',
+  const config = {
+    static: {
+      prefix: "/static/",
+      dir: process.cwd() + "/dist/static/"
+    },
+    view: {
+      root: path.join(process.cwd(), 'dist/'),
+      defaultExtension: '.html',
+      defaultViewEngine: 'ejs'
+    },
+    mysql: setting.mysql,
+    security: {
+      csrf: {
+        enable: false,
+      }
+    }
   };
 
-  return {
-    ...config,
-    ...userConfig,
-  };
+  // should change to your own
+  config.keys = appInfo.name + '_1501478794929_754';
+
+  // add your config here
+
+  return config;
+};
+
+exports.logger = {
+  level: 'DEBUG',
+  consoleLevel: 'DEBUG'
 };

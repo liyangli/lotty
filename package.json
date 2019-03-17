@@ -8,7 +8,10 @@
   },
   "dependencies": {
     "egg": "^2.15.1",
-    "egg-scripts": "^2.11.0"
+    "egg-logger": "^2.4.0",
+    "egg-mysql": "^3.0.0",
+    "egg-scripts": "^2.11.0",
+    "mysql": "^2.16.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",
