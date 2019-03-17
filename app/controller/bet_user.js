@@ -100,11 +100,7 @@ class BetUserController extends Controller {
         }
         
         try{
-            let list = await ctx.service.betUser.search(user,pageNo,pageSize);
-            respContent.data = {
-                total: 0,
-                list: list
-            }
+            respContent.data  = await ctx.service.betUser.search(user,pageNo,pageSize);
         }catch(e){
             logger.error(`获取数据出错了，错误信息为:${e}`);
         }

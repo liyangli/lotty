@@ -13,4 +13,8 @@ module.exports = app => {
   router.post('/betUser/add', controller.betUser.add);
   router.post('/betUser/search', controller.betUser.search);
 
+  //订单管理
+  router.post('/order/search', controller.order.search);
+
+
 };
