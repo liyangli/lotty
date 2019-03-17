@@ -13,25 +13,24 @@ class OrderService extends Service{
      * @param pageNo 当前页
      * @param pageSize 页大小
      */
-    async search(user,pageNo,pageSize){
+    async search(user,pageNo,pageSize,flag){
         let groupID = user.groupid;
         if (groupID == 1) {
-            return await this._adminSearch(pageNo, pageSize);
+            return await this._adminSearch(pageNo, pageSize,flag);
         }
-        return await this._customerSearch(user.id,pageNo,pageSize);
+        return await this._customerSearch(user.id,pageNo,pageSize,flag);
 
     }
 
-    async _adminSearch(pageNo,pageSize){
+    async _adminSearch(pageNo,pageSize,flag){
         const {app} = this;
         const {mysql,logger} = app;
         let totalSql = "select count(*) as total";
         let searchSql = "select * ";
-        let sql = " from T_User_Order order by createtime desc ";
+        let sql = " from T_User_Order where flag=? order by createtime desc ";
         totalSql +=  sql+";";
         searchSql += sql +" limit ?,? ;";
-        logger.info(`执行的sql：${totalSql.total}`);
-        let total = await mysql.query(totalSql);
+        let total = await mysql.query(totalSql,[parseInt(flag)]);
         logger.info(`总共记录：${JSON.stringify(total)}`);
         if(total[0].total == 0){
             return {
@@ -40,7 +39,7 @@ class OrderService extends Service{
             }
         }
         logger.info(`执行的sql：${searchSql},pageNo:${(pageNo-1)*pageSize},pageSize: ${pageSize}`);
-        let list = await mysql.query(searchSql,[(parseInt(pageNo)-1)*parseInt(pageSize),parseInt(pageSize)]);
+        let list = await mysql.query(searchSql,[parseInt(flag),parseInt((pageNo)-1)*parseInt(pageSize),parseInt(pageSize)]);
         return {
             total: total[0].total,
             list: list
@@ -48,16 +47,15 @@ class OrderService extends Service{
 
     }
 
-    async _customerSearch(userID,pageNo,pageSize){
+    async _customerSearch(userID,pageNo,pageSize,flag){
         const {app} = this;
         const {mysql,logger} = app;
         let totalSql = "select count(*) as total ";
         let searchSql = "select uo.*";
-        let sql = " from T_User_Order as uo,T_User_Bets_Link as link where uo.userno = link.betID and link.userID=? order by createtime desc";
+        let sql = " from T_User_Order as uo,T_User_Bets_Link as link where uo.userno = link.betID and link.userID=? and flag=? order by createtime desc";
         totalSql +=  sql;
         searchSql += sql +" limit ?,? ";
-        logger.info(`执行的sql：${totalSql}`);
-        let total = await mysql.query(totalSql,[parseInt(userID)]);
+        let total = await mysql.query(totalSql,[parseInt(userID),parseInt(flag)]);
         logger.info(`总共记录：${total[0].total}`);
         if(total[0].total == 0){
             return {
@@ -66,7 +64,7 @@ class OrderService extends Service{
             }
         }
         logger.info(`执行的sql：${searchSql},userID:${userID},pageNo:${pageNo},pageSize: ${pageSize}`);
-        let list = await mysql.query(searchSql,[parseInt(userID),(parseInt(pageNo)-1)*parseInt(pageSize),parseInt(pageSize)]);
+        let list = await mysql.query(searchSql,[parseInt(userID),parseInt(flag),(parseInt(pageNo)-1)*parseInt(pageSize),parseInt(pageSize)]);
         return {
             total: total[0].total,
             list: list

@@ -14,6 +14,7 @@ class OrderController extends Controller {
         const params = ctx.request.body;
         let pageNo = params.pageNo;
         let pageSize = params.pageSize;
+        let flag = params.flag;
         const respContent = {
             error_code: 0,
             msg: "",
@@ -31,6 +32,12 @@ class OrderController extends Controller {
             ctx.body = respContent;
             return;
         }
+        if(!flag || flag < 0 ){
+            respContent.error_code = 1;
+            respContent.msg = "没有设置类型";
+            ctx.body = respContent;
+            return;
+        }
 
         const user = ctx.session.user;
         if(!user){
@@ -41,7 +48,7 @@ class OrderController extends Controller {
         }
 
         try{
-            let list = await service.order.search(user,pageNo,pageSize);
+            let list = await service.order.search(user,pageNo,pageSize,flag);
             respContent.data = list;
         }catch(e){
             logger.error(`获取数据出错了，错误信息为:${e}`);
