@@ -40,6 +40,8 @@ class HomeController extends Controller {
       ctx.body = respContent;
       return;
     }
+    //成功后进行保存到session中
+    ctx.session.user = user;
     respContent.data = user;
     ctx.body = respContent;
   }
