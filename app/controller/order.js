@@ -55,6 +55,24 @@ class OrderController extends Controller {
         }
         ctx.body = respContent;
     }
+
+    async findType(){
+        //获取数据库中对应彩种类型数据，直接进行返回
+        const {ctx} = this;
+        const { logger,service } = ctx;
+        const respContent = {
+            error_code: 0,
+            msg: "",
+            data: []
+        };
+        try{
+            let list = await service.order.findType();
+            respContent.data = list;
+        }catch(e){
+            logger.error(`获取数据出错了，错误信息为:${e}`);
+        }
+        ctx.body = respContent;
+    }
 }
 
 module.exports = OrderController;
