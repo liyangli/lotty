@@ -5,10 +5,10 @@
 let config = {
     mysql: {
         client: {
-            host: '127.0.0.1',
-            port: '3308',
+            host: '74.121.150.248',
+            port: '27460',
             user: 'root',
-            password: '123456',
+            password: 'LYLlyl_lotty',
             database: 'lotty',
         },
         app: true,
