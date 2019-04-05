@@ -17,5 +17,10 @@ module.exports = app => {
   router.post('/order/search', controller.order.search);
   router.get('/order/findType', controller.order.findType);
 
+  //统计管理
+  router.get('/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
+  // router.get('/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
+  // router.get('/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
+
 
 };
