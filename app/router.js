@@ -15,6 +15,7 @@ module.exports = app => {
 
   //订单管理
   router.post('/order/search', controller.order.search);
+  router.get('/order/findType', controller.order.findType);
 
 
 };

@@ -74,6 +74,7 @@ class BetUserController extends Controller {
         let params = ctx.request.body;
         let pageNo = params.pageNo;
         let pageSize = params.pageSize;
+        let searchAttr = params.searchAttr;
         const respContent = {
             error_code: 0,
             msg: "",
@@ -100,7 +101,7 @@ class BetUserController extends Controller {
         }
         
         try{
-            respContent.data  = await ctx.service.betUser.search(user,pageNo,pageSize);
+            respContent.data  = await ctx.service.betUser.search(user,pageNo,pageSize,searchAttr);
         }catch(e){
             logger.error(`获取数据出错了，错误信息为:${e}`);
         }

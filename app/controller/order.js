@@ -10,11 +10,13 @@ const Controller = require('egg').Controller;
 class OrderController extends Controller {
     async search(){
         const {ctx} = this;
+        console.info("i am in controller search method......");
         const { logger,service } = ctx;
         const params = ctx.request.body;
         let pageNo = params.pageNo;
         let pageSize = params.pageSize;
         let flag = params.flag;
+        let lotno = params.lotno;
         const respContent = {
             error_code: 0,
             msg: "",
@@ -48,7 +50,25 @@ class OrderController extends Controller {
         }
 
         try{
-            let list = await service.order.search(user,pageNo,pageSize,flag);
+            let list = await service.order.search(user,pageNo,pageSize,flag,lotno);
+            respContent.data = list;
+        }catch(e){
+            logger.error(`获取数据出错了，错误信息为:${e}`);
+        }
+        ctx.body = respContent;
+    }
+
+    async findType(){
+        //获取数据库中对应彩种类型数据，直接进行返回
+        const {ctx} = this;
+        const { logger,service } = ctx;
+        const respContent = {
+            error_code: 0,
+            msg: "",
+            data: []
+        };
+        try{
+            let list = await service.order.findType();
             respContent.data = list;
         }catch(e){
             logger.error(`获取数据出错了，错误信息为:${e}`);

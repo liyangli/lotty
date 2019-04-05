@@ -60,23 +60,27 @@ class BetUserService extends Service{
      * 查询指定用户下的所有的彩民数据
      * @param user
      */
-    async search(user,pageNo,pageSize) {
+    async search(user,pageNo,pageSize,searchAttr) {
         //判断当前用户是否为超级用户，如果为超级用户则直接查询所有的数据；否则进行关联查询
         let groupID = user.groupid;
         if (groupID == 1) {
-            return await this._adminSearch(pageNo, pageSize);
+            return await this._adminSearch(pageNo, pageSize,searchAttr);
         }
-        return await this._customerSearch(user.id,pageNo,pageSize);
+        return await this._customerSearch(user.id,pageNo,pageSize,searchAttr);
     }
 
 
 
-    async _adminSearch(pageNo,pageSize){
+    async _adminSearch(pageNo,pageSize,searchAttr){
         const {app} = this;
         const {mysql,logger} = app;
         let totalSql = "select count(*) as total";
         let searchSql = "select bu.*,bua.`balance` as balance,bua.`lastprizeamt` as lastprizeamt";
-        let sql = " from `T_Bets_User` bu, `T_Bets_User_Account` bua where  bu.id = bua.userno order by bu.registerDate desc ";
+        let sql = " from `T_Bets_User` bu, `T_Bets_User_Account` bua where  bu.id = bua.userno  ";
+        if(searchAttr){
+            sql += " and ( name like '%"+searchAttr+"%' or phone like '%"+searchAttr+"%')";
+        }
+        sql += " order by bu.registerDate desc";
         totalSql +=  sql+";";
         searchSql += sql +" limit ?,? ;";
         logger.info(`执行的sql：${totalSql.total}`);
@@ -97,12 +101,16 @@ class BetUserService extends Service{
 
     }
 
-    async _customerSearch(userID,pageNo,pageSize){
+    async _customerSearch(userID,pageNo,pageSize,searchAttr){
         const {app} = this;
         const {mysql,logger} = app;
         let totalSql = "select count(*) as total ";
         let searchSql = "select bu.*,bua.`balance` as balance,bua.`lastprizeamt` as lastprizeamt";
-        let sql = " from `T_Bets_User` bu, `T_Bets_User_Account` bua , T_User_Bets_Link link where  bu.id =	bua.userno and bu.id = link.`betID` and link.userID= ? order by bu.registerDate desc ";
+        let sql = " from `T_Bets_User` bu, `T_Bets_User_Account` bua , T_User_Bets_Link link where  bu.id =	bua.userno and bu.id = link.`betID` and link.userID= ? ";
+        if(searchAttr){
+            sql += " and ( name like '%"+searchAttr+"%' or phone like '%"+searchAttr+"%')";
+        }
+        sql += " order by bu.registerDate desc ";
         totalSql +=  sql;
         searchSql += sql +" limit ?,? ";
         logger.info(`执行的sql：${totalSql}`);
