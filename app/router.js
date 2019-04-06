@@ -19,8 +19,8 @@ module.exports = app => {
 
   //统计管理
   router.get('/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
-  // router.get('/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
-  // router.get('/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
+  router.post('/betUser/statistics', controller.statistics.findBetUser);
+  router.post('/lotno/statistics', controller.statistics.findLotno);
 
 
 };
