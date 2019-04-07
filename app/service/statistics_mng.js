@@ -56,6 +56,8 @@ class StatisticsMngService extends Service{
 
 
     async findLotnoAmt(){
+        const {app} = this;
+        const {mysql,logger} = app;
         let sql = "select sum(amt) as amt from T_Lotno_Statistics";
         let amtSum = await mysql.query(sql);
         return amtSum[0].amt;
