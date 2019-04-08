@@ -24,10 +24,14 @@ class OrderService extends Service{
         let ids = [];
         if(lotno){
             //通过递归方式执行查询所有子集
-            ids.push(lotno);
+            if (typeof(lotno) == "string"){
+                ids = lotno.split(",");
+            }else{
+                ids.push(lotno);
+            }
+           
             await this._searchSunOrderTypes(ids);
         }
-        console.info("ids:"+ids);
         if (groupID == 1) {
             return await this._adminSearch(pageNo, pageSize,flag,ids);
         }
@@ -41,7 +45,6 @@ class OrderService extends Service{
         let sql = "select id from T_Order_Type where pid in (";
 
         let flag = false;
-        console.info("ids:"+ids);
         for(let i in ids){
             let id = ids[i];
             if(flag){
@@ -52,12 +55,10 @@ class OrderService extends Service{
             sql += "'"+id+"'";
         }
         sql += ")";
-        console.info("sql->"+sql);
         let list = await mysql.query(sql,[ids]);
         if(!list || list.length == 0){
             return ids;
         }
-
         //判断是否list中元素在ids中都含有了
         // for()
         let finishFlag = true;
