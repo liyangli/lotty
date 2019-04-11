@@ -5,22 +5,22 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  router.post('/login', controller.home.login);
-  router.post('/validUserHave', controller.home.validUserHave);
-  router.post('/register', controller.home.register);
+  router.post('/api/login', controller.home.login);
+  router.post('/api/validUserHave', controller.home.validUserHave);
+  router.post('/api/register', controller.home.register);
   
   //用户管理，添加关联
-  router.post('/betUser/add', controller.betUser.add);
-  router.post('/betUser/search', controller.betUser.search);
+  router.post('/api/betUser/add', controller.betUser.add);
+  router.post('/api/betUser/search', controller.betUser.search);
 
   //订单管理
-  router.post('/order/search', controller.order.search);
-  router.get('/order/findType', controller.order.findType);
+  router.post('/api/order/search', controller.order.search);
+  router.get('/api/order/findType', controller.order.findType);
 
   //统计管理
-  router.get('/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
-  router.post('/betUser/statistics', controller.statistics.findBetUser);
-  router.post('/lotno/statistics', controller.statistics.findLotno);
+  router.get('/api/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
+  router.post('/api/betUser/statistics', controller.statistics.findBetUser);
+  router.post('/api/lotno/statistics', controller.statistics.findLotno);
 
 
 };
