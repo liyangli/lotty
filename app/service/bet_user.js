@@ -37,7 +37,7 @@ class BetUserService extends Service{
             id: 0
         }
         try{
-            let result = await mysql.insert(userBetsLink,{betID: betID,userID:userID});
+            let result = await mysql.insert(userBetsLink,{betID: betID,userID:userID,reg_time:new Date().getTime()});
             if(result){
                 resp.flag = true;
                 resp.id = result.insertId;
