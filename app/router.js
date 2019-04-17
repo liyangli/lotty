@@ -13,6 +13,11 @@ module.exports = app => {
   router.post('/api/betUser/add', controller.betUser.add);
   router.post('/api/betUser/search', controller.betUser.search);
 
+  //员工管理
+  router.post('/api/staff/edit', controller.staff.edit);
+  router.post('/api/staff/search', controller.staff.search);
+  router.post('/api/staff/del', controller.staff.del);
+
   //订单管理
   router.post('/api/order/search', controller.order.search);
   router.get('/api/order/findType', controller.order.findType);
