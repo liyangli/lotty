@@ -46,6 +46,19 @@ class BetUserService extends Service {
     return result;
   }
   
+  async saveLotoStatistics(){
+    const { app } = this;
+    const { logger, mysql } = app;
+    let beforeTime = moment().add(-1,'days').format("YYYY-MM-DD");
+
+    let beginTime = moment().add(-1,'days').set('hour',0).set("minute",0).set("second",0).set("millisecond",0).valueOf();
+    let endTime = moment().set('hour',0).set("minute",0).set("second",0).set("millisecond",0).valueOf();
+    let sql = "insert into T_Lotno_Statistics(amt,orderaftprizeamt,userID,lotno,time) select nn.* from (select sum(amt) as amt,sum(`orderprizeamt`) as orderprizeamt,userID,lotno,'"+beforeTime+"' from T_User_Order uo, T_User_Bets_Link ubl where uo.userno=ubl.betID and uo.createTime >="+beginTime+" and uo.createTime<"+endTime+"  group by uo.lotno) as nn";
+    console.info("执行的sql:"+sql);
+    const result = await mysql.query(sql);
+    console.info(result);
+    return result;
+  }
 
   /**
      * 添加用户和彩民之间的关系

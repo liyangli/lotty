@@ -22,6 +22,7 @@ class UserStatistics extends Subscription {
      * 2、把统计数据进行入库操作
      */
     await this.ctx.service.betUser.saveBetsStatistics();
+    await this.ctx.service.betUser.saveLotoStatistics();
   }
   
 }

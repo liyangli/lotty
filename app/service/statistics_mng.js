@@ -55,10 +55,28 @@ class StatisticsMngService extends Service{
     }
 
 
-    async findLotnoAmt(){
+    async findLotnoStatistics(userID,startDate,endDate,start,pageSize){
+        let countSql = "select count(*) as ct " ;
+        let sql = "from  T_Lotno_Statistics as tn where  time >= '"+startDate+"' and time <= '"+endDate+"' and userID="+userID;
+        let pageSql = "select tn.* ";
+        pageSql += sql;
+        pageSql += " limit "+start+","+pageSize;
         const {app} = this;
         const {mysql,logger} = app;
-        let sql = "select sum(amt) as amt from T_Lotno_Statistics";
+        let countObj = await mysql.query(countSql+sql);
+        let total = countObj[0].ct;
+        let list = await mysql.query(pageSql);
+        return {
+            total: total,
+            list: list
+        }
+        
+    }
+
+    async findLotnoAmt(userID,startDate,endDate){
+        const {app} = this;
+        const {mysql,logger} = app;
+        let sql = "select sum(amt) as amt from T_Lotno_Statistics where time >= '"+startDate+"' and time <= '"+endDate+"' and userID="+userID;
         let amtSum = await mysql.query(sql);
         return amtSum[0].amt;
     }

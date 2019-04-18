@@ -79,14 +79,34 @@ class StatisticsController extends Controller {
             data: {}
         };
         const param = ctx.request.body;
-        const date = param.date;
+        const userID = param.userID;
+        if(!userID){
+            respContent.error_code = 1;
+            respContent.msg = "用户ID不允许为空";
+            ctx.body = respContent;
+            return;
+        }
+        const startDate = param.startDate;
+        if(!startDate){
+            respContent.error_code = 1;
+            respContent.msg = "开始时间不允许为空";
+            ctx.body = respContent;
+            return;
+        }
+        const endDate = param.endDate;
+        if(!endDate){
+            respContent.error_code = 1;
+            respContent.msg = "结束时间不允许为空";
+            ctx.body = respContent;
+            return;
+        }
         const curPage = param.curPage;
         const pageSize = param.pageSize;
         
-        const obj = await service.statisticsMng.findStatistics(date,"T_Lotno_Statistics",(curPage-1)*pageSize,pageSize);
+        const obj = await service.statisticsMng.findLotnoStatistics(userID,startDate,endDate,(curPage-1)*pageSize,pageSize);
         
         //进行统计对应总共数据；
-        const amtCnt = await service.statisticsMng.findLotnoAmt(date);
+        const amtCnt = await service.statisticsMng.findLotnoAmt(userID,startDate,endDate);
         respContent.data = {
             amtCnt: amtCnt,
             total: obj.total,
