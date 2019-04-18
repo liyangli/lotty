@@ -85,13 +85,13 @@ class OrderService extends Service{
     async _adminSearch(pageNo,pageSize,flag,ids){
         const {app} = this;
         const {mysql,logger} = app;
-        let totalSql = "select count(*) as total";
-        let searchSql = "select * ";
+        let totalSql = "select count(t1.id) as total ";
+        let searchSql = "select t1.* ,t2.nickName as nickName,t2.name as name";
         let tableName = TYPETABLE[flag];
-        let sql = " from "+tableName+" where 1=1 ";
+        let sql = " from "+tableName+"  as t1 ,T_Bets_User  as t2 where 1=1  and t1.userno=t2.id ";
         if(ids.length> 0){
 
-            sql += " and lotno in (";
+            sql += " and t1.lotno in (";
             let flag = false;
             for(let id of ids){
                 if(flag){
@@ -103,9 +103,11 @@ class OrderService extends Service{
             }
             sql += ")";
         }
-        sql +=" order by createtime desc ";
+
+        sql +=" order by t1.createtime desc ";
         totalSql +=  sql+";";
         searchSql += sql +" limit ?,? ;";
+        console.info(totalSql);
         let total = await mysql.query(totalSql,[parseInt(flag)]);
         logger.info(`总共记录：${JSON.stringify(total)}`);
         if(total[0].total == 0){
@@ -126,10 +128,10 @@ class OrderService extends Service{
     async _customerSearch(userID,pageNo,pageSize,flag,ids){
         const {app} = this;
         const {mysql,logger} = app;
-        let totalSql = "select count(*) as total ";
-        let searchSql = "select uo.*";
+        let totalSql = "select count(uo.id) as total ";
+        let searchSql = "select uo.*,t2.nickName as nickName,t2.name as name";
         let tableName = TYPETABLE[flag];
-        let sql = " from "+tableName+" as uo,T_User_Bets_Link as link where uo.userno = link.betID and link.userID=?";
+        let sql = " from "+tableName+" as uo,T_User_Bets_Link as link , T_Bets_User  as t2 where uo.userno = link.betID and uo.userno=t2.id and link.userID=?";
         if(ids.length> 0){
 
             sql += " and uo.lotno in (";
@@ -144,7 +146,7 @@ class OrderService extends Service{
             }
             sql += ")";
         }
-        sql += " order by createtime desc";
+        sql += " order by uo.createtime desc";
         totalSql +=  sql;
         searchSql += sql +" limit ?,? ";
         let total = await mysql.query(totalSql,[parseInt(userID),parseInt(flag)]);
