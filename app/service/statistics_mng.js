@@ -6,14 +6,41 @@
 "use strict";
 
 const Service = require('egg').Service;
+const moment = require('moment');
 class StatisticsMngService extends Service{
-    async findUserTotalDataMutation(){
+    async findUserTotalDataMutation(userID){
         const {app} = this;
         const {mysql,logger} = app;
-        let searchSql = "select * from T_User_Statistics";
-        logger.info(searchSql);
-        let list = await mysql.query(searchSql);
-        return list[0];
+        //处理方式，根据数据直接查询t_bets_user_link表中数据，判断注册周期是否在指定时间之内即可；
+        //获取月初时间；
+        
+        let dayTime = moment().startOf('day').valueOf();
+        let monthTime = moment().startOf('month').valueOf();
+        let weekTime = moment().startOf('week').valueOf();
+        let sql = "select reg_time from T_User_Bets_Link where userID="+userID ;
+        let list = await mysql.query(sql);
+        let content = {
+            "monthNum": 0,
+            "todayNum": 0,
+            "totalResult": list.length,
+            "weekNum": 0
+        };
+        
+        for(let i in list){
+            let obj = list[i];
+            let reg_time = obj.reg_time;
+            if(reg_time >= dayTime){
+                content.todayNum += 1;
+            }
+            if(reg_time >= weekTime){
+                content.weekNum += 1;
+            }
+            if(reg_time >= monthTime){
+                content.monthNum += 1;
+            }
+
+        }
+        return content;
     }
 
     /**

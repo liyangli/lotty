@@ -16,9 +16,16 @@ class StatisticsController extends Controller {
             msg: "",
             data: {}
         };
-        
+        let params = ctx.request.body;
+        let userID = params.userID;
+        if(!userID){
+            respContent.error_code = 1;
+            respContent.msg = "用户ID不允许为空";
+            ctx.body = respContent;
+            return;
+        }
         //直接获取对应本月相关数据库
-        const obj = await service.statisticsMng.findUserTotalDataMutation();
+        const obj = await service.statisticsMng.findUserTotalDataMutation(userID);
         respContent.data = obj;
         ctx.body = respContent;
         

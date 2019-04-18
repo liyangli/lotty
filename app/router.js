@@ -23,7 +23,7 @@ module.exports = app => {
   router.get('/api/order/findType', controller.order.findType);
 
   //统计管理
-  router.get('/api/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
+  router.post('/api/statistics/findUserTotalDataMutation', controller.statistics.findUserTotalDataMutation);
   router.post('/api/betUser/statistics', controller.statistics.findBetUser);
   router.post('/api/lotno/statistics', controller.statistics.findLotno);
 
