@@ -14,8 +14,14 @@ class StaffService extends Service{
         let sql = " from "+tableName+" where groupid=2 ";
         sql +=" order by reg_time desc ";
         totalSql +=  sql+";";
-        searchSql += sql +" limit ?,? ;";
+        let query = [];
+        searchSql += sql;
+        if(params.pageSize){
+            searchSql += " limit ?,? ;";
+            query = [parseInt((params.pageNo)-1)*parseInt(params.pageSize),parseInt(params.pageSize)];
+        }
         let total = await mysql.query(totalSql);
+        logger.info(searchSql)
         logger.info(`总共记录：${JSON.stringify(total)}`);
         if(total[0].total == 0){
             return {
@@ -23,7 +29,7 @@ class StaffService extends Service{
                 list: []
             }
         }
-        let list = await mysql.query(searchSql,[parseInt((params.pageNo)-1)*parseInt(params.pageSize),parseInt(params.pageSize)]);
+        let list = await mysql.query(searchSql,query);
         return {
             total: total[0].total,
             list: list
