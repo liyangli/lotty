@@ -48,8 +48,8 @@ class StatisticsMngService extends Service{
      */
     async findStatistics(userID,startDate,endDate,tableName,start,pageSize){
         let countSql = "select count(*) as ct " ;
-        let sql = "from "+tableName+" as tn,T_Bets_User bu where tn.betID=bu.id and time >= '"+startDate+"' and time <= '"+endDate+"' and userID="+userID;
-        let pageSql = "select tn.*,bu.nickName as nickname,bu.username as username ";
+        let sql = "from "+tableName+" as tn,T_Bets_User bu where tn.betID=bu.id and time >= '"+startDate+"' and time <= '"+endDate+"' and userID="+userID +" group by bu.id ";
+        let pageSql = "select sum(tn.amt) as amt,sum(tn.orderaftprizeamt) as orderaftprizeamt,tn.userID  as userID,bu.nickName as nickname,bu.username as username ";
         pageSql += sql;
         pageSql += " limit "+start+","+pageSize;
         const {app} = this;
